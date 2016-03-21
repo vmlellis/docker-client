@@ -1,0 +1,82 @@
+master:
+  build: elasticsearch/
+  command:
+    - elasticsearch
+    - -Des.node.name=master
+    - -Des.cluster.name=elasticsearch-dev
+    - -Des.node.master=true
+    - -Des.node.data=false
+    - -Des.http.enabled=false
+    - -Des.discovery.zen.ping.multicast.enabled=false
+  environment:
+    - ES_HEAP_SIZE=512m
+  volumes:
+    - "./data/master:/usr/share/elasticsearch/data"
+
+client:
+  build: elasticsearch/
+  command:
+    - elasticsearch
+    - -Des.node.name=client
+    - -Des.cluster.name=elasticsearch-dev
+    - -Des.node.master=false
+    - -Des.node.data=false
+    - -Des.http.enabled=true
+    - -Des.discovery.zen.ping.unicast.hosts=master
+  ports:
+    - "9200:9200"
+  environment:
+    - ES_HEAP_SIZE=512m
+  links:
+    - master
+
+node1:
+  build: elasticsearch/
+  command:
+    - elasticsearch
+    - -Des.node.name=node1
+    - -Des.cluster.name=elasticsearch-dev
+    - -Des.node.master=false
+    - -Des.node.data=true
+    - -Des.http.enabled=false
+    - -Des.discovery.zen.ping.unicast.hosts=master
+  environment:
+    - ES_HEAP_SIZE=2g
+  links:
+    - master
+  volumes:
+    - "./data/elastic1:/usr/share/elasticsearch/data"
+
+node2:
+  build: elasticsearch/
+  command:
+    - elasticsearch
+    - -Des.node.name=node2
+    - -Des.cluster.name=elasticsearch-dev
+    - -Des.node.master=false
+    - -Des.node.data=true
+    - -Des.http.enabled=false
+    - -Des.discovery.zen.ping.unicast.hosts=master
+  environment:
+    - ES_HEAP_SIZE=2g
+  links:
+    - master
+  volumes:
+    - "./data/elastic2:/usr/share/elasticsearch/data"
+
+node3:
+  build: elasticsearch/
+  command:
+    - elasticsearch
+    - -Des.node.name=node3
+    - -Des.cluster.name=elasticsearch-dev
+    - -Des.node.master=false
+    - -Des.node.data=true
+    - -Des.http.enabled=false
+    - -Des.discovery.zen.ping.unicast.hosts=master
+  environment:
+    - ES_HEAP_SIZE=2g
+  links:
+    - master
+  volumes:
+    - "./data/elastic3:/usr/share/elasticsearch/data"
